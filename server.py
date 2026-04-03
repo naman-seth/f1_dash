@@ -16,7 +16,7 @@ def home():
 @app.get("/positions")
 def get_positions():
     global cache
-    url = "https://api.openf1.org/v1/position?session_key=11253"
+    url = "https://api.openf1.org/v1/position?session_key=11253" #qualifying data
     data = requests.get(url).json()
 
     '''cleaned = []
