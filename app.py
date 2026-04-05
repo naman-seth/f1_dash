@@ -8,12 +8,13 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 st.title("F1 dash")
+track=requests.get("http://127.0.0.1:8000/track-status").json()
 left, right = st.columns([1,1])
 
 with left:
     st.subheader("🚦 Track Status")
 with right:
-    status = "SC"  # fetch this from API later
+    status = track.get("flag",'UNKNOWN')
 
     if status == "GREEN":
         st.success("🟢 GREEN FLAG")
@@ -25,6 +26,8 @@ with right:
         st.info("🚗 SAFETY CAR")
     elif status == "VSC":
         st.info("⚠️ VIRTUAL SAFETY CAR")
+    else:
+        st.info(track.get('message'))
 
 #dashdata = requests.get("http://127.0.0.1:8000/dashboard").json()
 #st.write(dashdata)
@@ -36,6 +39,8 @@ for d in data[:10]:
     table.append({
             "Driver": d["driver_number"],
             "Position": d["position"],
+            "Gap": d.get("gap", "-"),
+            "Tyre": "M",  # placeholder
         })
 placeholder.table(table)
 
@@ -68,6 +73,13 @@ df = pd.DataFrame({
 })
 
 st.line_chart(df.set_index("time"))
+
+'''col3=st.column(1)
+with col3:'''
+st.subheader("Race info")
+st.metric('Lap','23/58')
+st.metric('Session','Race')
+st.metric('Track temp','32.3')
 
 '''df = pd.DataFrame(data[:10])
 #df = df.sort_values("postion")

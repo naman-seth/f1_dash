@@ -40,7 +40,8 @@ def get_laps():
 
 @app.get("/track-status")
 def track_status():
-    return requests.get("https://api.openf1.org/v1/race_control?session_key=11253").json()
+    data= requests.get("https://api.openf1.org/v1/race_control?session_key=11253").json()
+    return data[-1] if data else{}
 @app.get("/dashboard")
 def dashboard():
     return {
