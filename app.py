@@ -8,12 +8,29 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 st.title("F1 dash")
-'''dashdata = requests.get("http://127.0.0.1:8000/dashboard").json()
-st.write(dashdata)'''
+left, right = st.columns([1,1])
+
+with left:
+    st.subheader("🚦 Track Status")
+with right:
+    status = "SC"  # fetch this from API later
+
+    if status == "GREEN":
+        st.success("🟢 GREEN FLAG")
+    elif status == "YELLOW":
+        st.warning("🟡 YELLOW FLAG")
+    elif status == "RED":
+        st.error("🔴 RED FLAG")
+    elif status == "SC":
+        st.info("🚗 SAFETY CAR")
+    elif status == "VSC":
+        st.info("⚠️ VIRTUAL SAFETY CAR")
+
+#dashdata = requests.get("http://127.0.0.1:8000/dashboard").json()
+#st.write(dashdata)
 
 data = requests.get("http://127.0.0.1:8000/positions").json()
 placeholder = st.empty()
-
 table = []
 for d in data[:10]:
     table.append({
