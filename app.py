@@ -31,9 +31,23 @@ with right:
 
 #dashdata = requests.get("http://127.0.0.1:8000/dashboard").json()
 #st.write(dashdata)
+c1, c2 = st.columns([1,1])
+with c1:
+    st.subheader("Fastest Lap")
+with c2:
+    st.markdown("""
+    <div style="
+        background-color: #F3E8FF;
+        padding: 12px;
+        color: black;
+        font-weight: 500;
+    ">
+        VER - 1:23.456
+    </div>
+    """, unsafe_allow_html=True)
 
 data = requests.get("http://127.0.0.1:8000/positions").json()
-placeholder = st.empty()
+# placeholder = st.empty()
 table = []
 for d in data[:10]:
     table.append({
@@ -42,7 +56,8 @@ for d in data[:10]:
             "Gap": d.get("gap", "-"),
             "Tyre": "M",  # placeholder
         })
-placeholder.table(table)
+st.table(table)
+#placeholder.table(table)
 
 
 col1, col2 = st.columns(2)
