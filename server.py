@@ -8,6 +8,10 @@ cache = {
     "data": None,
     "last_updated": 0
 }
+cache_fastest={
+        'data': None,
+        'last_updated':0
+}
 
 @app.get("/")
 def home():
@@ -53,24 +57,29 @@ def dashboard():
 @app.get("/fastest-lap")
 def fastest_lap():
     import time,requests
-    data = requests.get("https://api.openf1.org/v1/laps?session_key=11253").json()
 
-    fastest = None
-    min_time = float("inf")
+    global cache_fastest
 
-    for lap in data:
-        lap_time = lap.get("lap_duration")
+    if time.time() - cache_fastest['last_updated'] > 5:
+        data = requests.get("https://api.openf1.org/v1/laps?session_key=11253").json()
 
-        if lap_time is not None and lap_time < min_time:
-            min_time = lap_time
-            fastest = lap
+        fastest = None
+        min_time = float("inf")
 
-    if fastest:
-        return {
-            "driver": fastest.get("driver_number"),
-            "lap_duration": fastest.get("lap_duration")
-        }
+        for lap in data:
+            lap_duration = lap.get("lap_duration")
 
-    return {}
+            if lap_duration is not None and lap_duration < min_time:
+                min_time = lap_duration
+                fastest = lap
+
+        if fastest:
+            cache_fastest["data"] = {
+                "driver": fastest.get("driver_number"),
+                "lap_duration": fastest.get("lap_duration")
+            }
+
+        cache_fastest['last_updated'] = time.time()
+    return cache_fastest['data'] or {}
 
     
