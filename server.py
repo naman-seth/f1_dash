@@ -49,3 +49,28 @@ def dashboard():
         "laps": get_laps(),
         "track": track_status()
     }
+
+@app.get("/fastest-lap")
+def fastest_lap():
+    import time,requests
+    data = requests.get("https://api.openf1.org/v1/laps?session_key=11253").json()
+
+    fastest = None
+    min_time = float("inf")
+
+    for lap in data:
+        lap_time = lap.get("lap_duration")
+
+        if lap_time is not None and lap_time < min_time:
+            min_time = lap_time
+            fastest = lap
+
+    if fastest:
+        return {
+            "driver": fastest.get("driver_number"),
+            "lap_duration": fastest.get("lap_duration")
+        }
+
+    return {}
+
+    
