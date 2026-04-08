@@ -31,18 +31,22 @@ with right:
 
 #dashdata = requests.get("http://127.0.0.1:8000/dashboard").json()
 #st.write(dashdata)
+fastest = requests.get("http://127.0.0.1:8000/fastest-lap").json()
+
+driver = fastest.get("driver", "N/A")
+lap_duration = fastest.get("lap_duration", 'None')
 c1, c2 = st.columns([1,1])
 with c1:
     st.subheader("Fastest Lap")
 with c2:
-    st.markdown("""
+    st.markdown(f"""
     <div style="
         background-color: #F3E8FF;
         padding: 12px;
         color: black;
         font-weight: 500;
     ">
-        VER - 1:23.456
+       {driver} - {lap_duration} 
     </div>
     """, unsafe_allow_html=True)
 
