@@ -55,7 +55,7 @@ data = requests.get("http://127.0.0.1:8000/positions").json()
 table = []
 for d in data[:10]:
     table.append({
-            "Driver": d["driver_number"],
+            "Driver": d["driver"],
             "Position": d["position"],
             "Gap": d.get("gap", "-"),
             "Tyre": "M",  # placeholder
@@ -74,7 +74,7 @@ with col2:
 
 st.session_state.history.append({
     "time": time.time(),
-    "positions": {d["driver_number"]: d["position"] for d in data[:5]}
+    "positions": {d["driver"]: d["position"] for d in data[:5]}
 })
 
 driver = list(st.session_state.history[0]["positions"].keys())[0]
