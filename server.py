@@ -17,6 +17,26 @@ cache_fastest={
 def home():
     return {"message": "F1 Backend Running"}
 
+app.state.driver_map = {}
+
+@app.get("/drivers")
+@app.on_event("startup")
+def load_drivers():
+    data = requests.get("https://api.openf1.org/v1/drivers?session_key=11253").json()
+
+    driver_map = {}
+
+    for d in data:
+        number = d.get("driver_number")
+        name = d.get("name_acronym")  
+
+        if number and name:
+            driver_map[number] = name
+
+    app.state.driver_map = driver_map
+
+    return driver_map
+
 @app.get("/positions")
 def get_positions():
     global cache
