@@ -41,23 +41,22 @@ def load_drivers():
 def get_positions():
     global cache
     url = "https://api.openf1.org/v1/position?session_key=11253" #qualifying data
-    data = requests.get(url).json()
 
-    '''cleaned = []
-    for d in data:
-        cleaned.append({
-            "driver": d.get("driver_number"),
-            "position": d.get("position"),
-            "time": d.get("date")
-        })
-
-    return cleaned'''
     if time.time() - cache["last_updated"] > 2:
-
-        cache["data"] = data
+        data = requests.get(url).json()
+        cleaned = []
+        for d in data:
+            driver_number = d.get("driver_number")
+            cleaned.append({
+                "driver": app.state.driver_map.get(driver_number,driver_number),
+                 "position": d.get("position"),
+                 "time": d.get("date")
+            })
+        cache["data"] = cleaned        
         cache["last_updated"] = time.time()
 
     return cache["data"]
+
 @app.get("/laps")
 def get_laps():
     return requests.get("https://api.openf1.org/v1/laps?session_key=11253").json()
@@ -94,8 +93,9 @@ def fastest_lap():
                 fastest = lap
 
         if fastest:
+            driver_number = fastest.get('driver_number')
             cache_fastest["data"] = {
-                "driver": fastest.get("driver_number"),
+                    "driver": app.state.driver_map.get(driver_number,driver_number),
                 "lap_duration": fastest.get("lap_duration")
             }
 
