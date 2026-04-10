@@ -12,7 +12,7 @@ track=requests.get("http://127.0.0.1:8000/track-status").json()
 left, right = st.columns([1,1])
 
 with left:
-    st.subheader("🚦 Track Status")
+    st.subheader("Track Status")
 with right:
     status = track.get("flag",'UNKNOWN')
 
@@ -63,14 +63,7 @@ for d in data[:10]:
 st.table(table)
 #placeholder.table(table)
 
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.subheader("Leaderboard")
-
-with col2:
-    st.subheader("Track Status")
+st.subheader("Leaderboard")
 
 st.session_state.history.append({
     "time": time.time(),
@@ -96,7 +89,12 @@ st.line_chart(df.set_index("time"))
 '''col3=st.column(1)
 with col3:'''
 st.subheader("Race info")
-st.metric('Lap','23/58')
+laps_data = requests.get("http://127.0.0.1:8000/laps").json()
+current_lap = max(
+        [lap.get("lap_number", 0) for lap in laps_data],
+        default=0
+    )
+st.metric('Lap',f'{current_lap}')
 st.metric('Session','Race')
 st.metric('Track temp','32.3')
 
